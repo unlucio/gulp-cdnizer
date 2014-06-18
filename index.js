@@ -12,7 +12,6 @@ module.exports = function(opts) {
 	
 	var cdnizerHandler = cdnizer(opts);
 
-
 	//noinspection JSUnusedLocalSymbols
 	function cdnizerStream(file, enc, callback) {
         var magic = new Magic();
@@ -36,8 +35,10 @@ module.exports = function(opts) {
                     if (detectedType.indexOf('text') > -1) {
                         file.contents = new Buffer(cdnizerHandler(String(file.contents)));
                         self.push(file);
+                        return callback();
+                    } else {
+                        return callback(err, file);
                     }
-                    return callback();
                 });
 			} catch(error) {
 				this.emit("error", pluginError(error.toString()))
